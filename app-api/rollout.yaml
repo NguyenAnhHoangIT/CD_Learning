@@ -53,7 +53,7 @@ spec:
         startingStep: 1
       steps:
       - setWeight: 10
-      - pause: {duration: 2m}
+      - pause: {duration: 1m}
       - setWeight: 50
-      - pause: {duration: 2m}
+      - pause: {duration: 1m}
       - setWeight: 100
