@@ -172,7 +172,7 @@ kind: K8sPSPHostNetworkingPorts
 metadata:
   name: container-must-not-use-host-networking-ports
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]

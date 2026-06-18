@@ -63,7 +63,7 @@ kind: K8sReplicaLimits
 metadata:
   name: max-5-replicas-deployment
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: ["apps"]

@@ -295,7 +295,7 @@ kind: K8sPSPAllowedUsers
 metadata:
   name: container-must-run-as-non-root
 spec:
-  enforcementAction: warn  
+  enforcementAction: deny  
   match:
     kinds:
       - apiGroups: [""]

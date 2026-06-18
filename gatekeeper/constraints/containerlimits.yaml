@@ -272,7 +272,7 @@ kind: K8sContainerLimits
 metadata:
   name: container-must-have-resource-limits
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]

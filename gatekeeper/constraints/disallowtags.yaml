@@ -94,7 +94,7 @@ kind: K8sDisallowedTags
 metadata:
   name: container-image-must-not-have-latest-tag
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]
