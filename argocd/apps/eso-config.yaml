@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eso-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3" # Wave lớn hơn để đợi Operator chạy xong
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/NguyenAnhHoangIT/CD_Learning.git' # Thay bằng link repo của bạn
+    targetRevision: HEAD
+    path: eso # Trỏ vào thư mục chứa SecretStore và ExternalSecret
+  destination:
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

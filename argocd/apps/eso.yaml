@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4" # Wave âm để cài đặt trước tiên
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.external-secrets.io'
+    chart: external-secrets
+    targetRevision: 0.9.11 # Hoặc bản ổn định bạn đang dùng
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: external-secrets # Cài operator vào ns riêng này
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
