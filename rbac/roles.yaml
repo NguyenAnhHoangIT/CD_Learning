@@ -1,0 +1,46 @@
+# ---------------------------------------------------------
+# 1. ROLE: developer
+# Quyền: CRUD workload (deploy/pod/service) chỉ trong namespace "demo"
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: demo
+  name: developer-role
+rules:
+  # Phân quyền cho Pods và Services (thuộc api group mặc định "")
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+  # Phân quyền cho Deployments (thuộc api group "apps")
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+
+---
+# ---------------------------------------------------------
+# 2. CLUSTERROLE: sre
+# Quyền: Xem + thao tác pod trên TOÀN CỤM (không có namespace)
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sre-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/exec", "pods/log"] # Thêm quyền exec và xem log cho SRE
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+
+---
+# ---------------------------------------------------------
+# 3. CLUSTERROLE: viewer
+# Quyền: Chỉ đọc (get/list/watch) trên TOÀN CỤM
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: viewer-role
+rules:
+  - apiGroups: ["*"] # Áp dụng cho toàn bộ API Group
+    resources: ["*"] # Áp dụng cho toàn bộ Resource
+    verbs: ["get", "list", "watch"] # Tuyệt đối không có create/update/delete

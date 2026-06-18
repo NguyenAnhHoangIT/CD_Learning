@@ -1,0 +1,53 @@
+# ---------------------------------------------------------
+# 1. ROLEBINDING: Gắn developer-role cho Alice
+# Phạm vi: Chỉ có tác dụng trong namespace "demo"
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developer-binding
+  namespace: demo          # Bắt buộc phải trùng với namespace của Role
+subjects:
+  - kind: User
+    name: alice            # Tên user được phân quyền
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role               # Loại vai trò muốn gắn (Role)
+  name: developer-role     # Tên Role đã tạo ở file roles.yaml
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ---------------------------------------------------------
+# 2. CLUSTERROLEBINDING: Gắn sre-role cho Bob
+# Phạm vi: Toàn cụm (Toàn bộ các namespace)
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sre-binding        # ClusterRoleBinding KHÔNG có trường namespace
+subjects:
+  - kind: User
+    name: bob              # Tên user được phân quyền
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole        # Loại vai trò muốn gắn (ClusterRole)
+  name: sre-role           # Tên ClusterRole đã tạo ở file roles.yaml
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# ---------------------------------------------------------
+# 3. CLUSTERROLEBINDING: Gắn viewer-role cho Carol
+# Phạm vi: Toàn cụm (Chỉ đọc toàn bộ các tài nguyên)
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: viewer-binding     # ClusterRoleBinding KHÔNG có trường namespace
+subjects:
+  - kind: User
+    name: carol            # Tên user được phân quyền
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole        # Loại vai trò muốn gắn (ClusterRole)
+  name: viewer-role        # Tên ClusterRole đã tạo ở file roles.yaml
+  apiGroup: rbac.authorization.k8s.io

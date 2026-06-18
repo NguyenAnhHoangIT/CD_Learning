@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rbac
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/NguyenAnhHoangIT/CD_Learning.git' 
+    targetRevision: HEAD
+    path: rbac               # Trỏ đúng vào thư mục rbac chứa 2 file bạn vừa tạo
+  destination:
+    server: 'https://kubernetes.default.svc' # Apply vào cụm hiện tại
+  syncPolicy:
+    automated:
+      prune: true            # Tự xóa resource nếu bạn xóa trên Git
+      selfHeal: true         # Tự sửa nếu có ai đó sửa tay bằng kubectl
