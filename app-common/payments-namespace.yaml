@@ -1,0 +1,7 @@
+# Namespace: Tạo namespace payments cho dịch vụ thanh toán
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payments
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
