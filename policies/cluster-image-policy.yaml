@@ -1,0 +1,14 @@
+apiVersion: policy.sigstore.dev/v1beta1
+kind: ClusterImagePolicy
+metadata:
+  name: w10-api-signature-policy
+spec:
+  images:
+  - glob: "**nahoangit/w10-api**"
+  authorities:
+  - key:
+      data: |
+        -----BEGIN PUBLIC KEY-----
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEdUNP0WLtxaw1KRll5xQFux8HAMLf
+        FRAm3NPFbwvVVaxLA2q4TBo4k+i42BxxYFn3xIwHLULAmx+R1Y8LvB1y+Q==
+        -----END PUBLIC KEY-----

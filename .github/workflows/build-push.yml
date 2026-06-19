@@ -36,6 +36,10 @@ jobs:
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: false
 
+      - name: Get short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -51,7 +55,7 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value=${{ steps.semver.outputs.version }}
-            type=sha,prefix=v${{ steps.semver.outputs.version }}-
+            type=raw,value=${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -61,10 +65,29 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}'
+          severity: 'HIGH,CRITICAL'
+          exit-code: 1
+
+        # Cài đặt Cosign installer
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@main
+
+      # Ký image bằng private key
+      - name: Sign the image
+        run: |
+          cosign sign --key env://COSIGN_PRIVATE_KEY ${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        
       - name: Update rollout.yaml with new version
         run: |
-          sed -i "s|image: .*/w10-api:.*|image: ${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}|g" app-api/rollout.yaml
-          sed -i "s|value: \"v.*\"|value: \"v${{ steps.semver.outputs.version }}\"|g" app-api/rollout.yaml
+          sed -i "s|image: .*/w10-api:.*|image: ${{ env.IMAGE_NAME }}:${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}|g" app-api/rollout.yaml
+          sed -i "s|value: \"v.*\"|value: \"v${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}\"|g" app-api/rollout.yaml
 
       - name: Commit and push version update
         run: |
@@ -74,11 +97,11 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: bump version to v${{ steps.semver.outputs.version }}"
+            git commit -m "chore: bump version to v${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}"
             git push
           fi
 
       - name: Create git tag
         run: |
-          git tag v${{ steps.semver.outputs.version }}
-          git push origin v${{ steps.semver.outputs.version }}
+          git tag v${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}
+          git push origin v${{ steps.semver.outputs.version }}-${{ steps.vars.outputs.sha_short }}
