@@ -44,3 +44,32 @@ rules:
   - apiGroups: ["*"] # Áp dụng cho toàn bộ API Group
     resources: ["*"] # Áp dụng cho toàn bộ Resource
     verbs: ["get", "list", "watch"] # Tuyệt đối không có create/update/delete
+
+---
+# ---------------------------------------------------------
+# 4. ROLE: payments-dev-role
+# Quyền: CRUD workload (deploy/pod/service/configmap/ingress) chỉ trong namespace "payments"
+# KHÔNG CÓ QUYỀN: đọc/sửa secrets, rbac (roles/rolebindings)
+# ---------------------------------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: payments
+  name: payments-dev-role
+rules:
+  # Quyền CRUD trên Pods, Services, ConfigMaps, PVCs (thuộc api group "")
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "persistentvolumeclaims"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+  # Quyền CRUD trên Deployments, StatefulSets, DaemonSets, ReplicaSets (thuộc api group "apps")
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+  # Quyền CRUD trên Ingresses (thuộc api group "networking.k8s.io")
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+  # Quyền CRUD trên Argo Rollouts (thuộc api group "argoproj.io")
+  - apiGroups: ["argoproj.io"]
+    resources: ["rollouts"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-payments
+  namespace: payments
+spec:
+  podSelector: {} # Áp dụng cho toàn bộ Pods trong namespace payments
+  policyTypes:
+  - Ingress
+  - Egress
+  # Ingress: Mặc định chặn toàn bộ kết nối đi vào (không khai báo rule nào)
+  ingress: []
+  # Egress: Mặc định chặn toàn bộ kết nối đi ra, CHỈ cho phép phân giải DNS (Port 53 UDP/TCP)
+  egress:
+  - to:
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53

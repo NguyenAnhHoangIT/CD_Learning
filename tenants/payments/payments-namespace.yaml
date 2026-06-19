@@ -1,4 +1,4 @@
-# Namespace: Tạo namespace payments cho dịch vụ thanh toán
+# Namespace: Tạo namespace payments
 apiVersion: v1
 kind: Namespace
 metadata:
