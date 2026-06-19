@@ -51,22 +51,4 @@ roleRef:
   kind: ClusterRole        # Loại vai trò muốn gắn (ClusterRole)
   name: viewer-role        # Tên ClusterRole đã tạo ở file roles.yaml
   apiGroup: rbac.authorization.k8s.io
-
----
-# ---------------------------------------------------------
-# 4. ROLEBINDING: Gắn payments-dev-role cho User payments-dev
-# Phạm vi: Chỉ có tác dụng trong namespace "payments"
-# ---------------------------------------------------------
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: payments-dev-binding
-  namespace: payments
-subjects:
-  - kind: User
-    name: payments-dev
-    apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: Role
-  name: payments-dev-role
-  apiGroup: rbac.authorization.k8s.io
+

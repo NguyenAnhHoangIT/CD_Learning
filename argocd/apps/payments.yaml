@@ -1,11 +1,11 @@
-# ArgoCD App: Deploy payments namespace resources (limits, quota)
+# ArgoCD App: Deploy payments tenant infrastructure/policies
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: payments
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1" # Chạy cùng đợt với app-common
+    argocd.argoproj.io/sync-wave: "-1" # Deploy early alongside common infra
 spec:
   project: default
   source:
