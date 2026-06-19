@@ -9,6 +9,7 @@ metadata:
     app: api
   annotations:
     argocd.argoproj.io/sync-wave: "0"
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 4
   selector:
